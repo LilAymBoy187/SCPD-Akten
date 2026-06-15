@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCPD – Senora City Police Department</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Inter:wght@300;400;500&display=swap');
+
+:root {
+  --bg: #050a0f;
+  --bg2: #090f18;
+  --panel: #0c1521;
+  --border: #1a3a5c;
+  --accent: #00aaff;
+  --accent2: #0066cc;
+  --accent-dim: rgba(0,170,255,0.08);
+  --warn: #ff6b00;
+  --green: #00ff88;
+  --red: #ff3a3a;
+  --yellow: #ffd600;
+  --text: #b8d4e8;
+  --text-dim: #4a6a82;
+  --white: #e8f4ff;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; font-weight:300; overflow-x:hidden; }
+
+body::before {
+  content:''; position:fixed; inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);
+  pointer-events:none; z-index:9999;
+}
+
+/* ── NAV ── */
+nav {
+  position:fixed; top:0; left:0; right:0;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 2rem; height:60px;
+  background:rgba(5,10,15,0.95);
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(12px); z-index:1000;
+  flex-wrap: wrap; gap: 0.5rem;
+}
+.nav-logo { font-family:'Orbitron',monospace; font-size:1.1rem; font-weight:900; color:var(--accent); letter-spacing:0.15em; text-shadow:0 0 20px rgba(0,170,255,0.5); }
+.nav-logo span { color:var(--white); }
+nav ul { list-style:none; display:flex; gap:1.2rem; flex-wrap:wrap; }
+nav ul a { color:var(--text-dim); text-decoration:none; font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase; font-family:'Share Tech Mono',monospace; transition:color 0.2s; white-space:nowrap; }
+nav ul a:hover { color:var(--accent); }
+
+/* ── PAGE SECTIONS ── */
+.page { display:none; padding-top:60px; min-height:100vh; }
+.page.active { display:block; }
+
+/* ── HERO ── */
+#page-home {
+  display:none; padding-top:60px;
+  min-height:100vh; position:relative; overflow:hidden;
+}
+#page-home.active { display:flex; flex-direction:column; align-items:center; justify-content:center; }
+
+.hero-grid {
+  position:absolute; inset:0;
+  background-image:linear-gradient(rgba(0,170,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,170,255,0.04) 1px,transparent 1px);
+  background-size:60px 60px;
+  animation:gridPulse 8s ease-in-out infinite;
+}
+@keyframes gridPulse { 0%,100%{opacity:.5}50%{opacity:1} }
+.hero-glow { position:absolute; width:600px; height:600px; border-radius:50%; background:radial-gradient(circle,rgba(0,100,200,0.15) 0%,transparent 70%); top:50%; left:50%; transform:translate(-50%,-50%); animation:glowPulse 4s ease-in-out infinite; }
+@keyframes glowPulse { 0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.6}50%{transform:translate(-50%,-50%) scale(1.1);opacity:1} }
+
+.hero-content { position:relative; text-align:center; z-index:2; padding:2rem; }
+.hero-badge { display:inline-block; font-family:'Share Tech Mono',monospace; font-size:0.7rem; letter-spacing:0.3em; color:var(--accent); border:1px solid var(--border); padding:0.4rem 1.2rem; margin-bottom:2rem; text-transform:uppercase; animation:blink 3s step-end infinite; }
+@keyframes blink { 0%,90%,100%{border-color:var(--border)}95%{border-color:var(--accent);box-shadow:0 0 10px rgba(0,170,255,.3)} }
+
+.hero-shield { width:120px; height:140px; margin:0 auto 2rem; }
+.hero-shield svg { width:100%; height:100%; }
+.hero-title { font-family:'Orbitron',monospace; font-size:clamp(2.5rem,6vw,5rem); font-weight:900; color:var(--white); letter-spacing:0.08em; line-height:1; margin-bottom:0.5rem; text-shadow:0 0 40px rgba(0,170,255,.3); }
+.hero-title .accent { color:var(--accent); }
+.hero-sub { font-family:'Share Tech Mono',monospace; font-size:0.85rem; letter-spacing:0.25em; color:var(--text-dim); text-transform:uppercase; margin-bottom:1.5rem; }
+.hero-desc { font-size:1rem; color:var(--text); max-width:480px; line-height:1.7; margin:0 auto 2.5rem; }
+
+.btn-primary { display:inline-block; font-family:'Orbitron',monospace; font-size:0.8rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--bg); background:var(--accent); padding:0.9rem 2.5rem; border:none; cursor:pointer; clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%); transition:all 0.2s; box-shadow:0 0 20px rgba(0,170,255,.3); text-decoration:none; }
+.btn-primary:hover { background:var(--white); box-shadow:0 0 40px rgba(0,170,255,.6); transform:translateY(-1px); }
+
+.stats-bar { background:var(--panel); border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:2rem; display:flex; justify-content:center; gap:4rem; flex-wrap:wrap; }
+.stat { text-align:center; }
+.stat-val { font-family:'Orbitron',monospace; font-size:2rem; font-weight:900; color:var(--accent); display:block; text-shadow:0 0 20px rgba(0,170,255,.4); }
+.stat-label { font-family:'Share Tech Mono',monospace; font-size:0.65rem; letter-spacing:0.25em; color:var(--text-dim); text-transform:uppercase; }
+
+/* ── SECTION BASE ── */
+.sec { padding:5rem 2rem; max-width:1100px; margin:0 auto; }
+.section-label { font-family:'Share Tech Mono',monospace; font-size:0.65rem; letter-spacing:0.4em; color:var(--accent); text-transform:uppercase; margin-bottom:0.75rem; }
+.section-title { font-family:'Orbitron',monospace; font-size:clamp(1.4rem,3vw,2rem); font-weight:700; color:var(--white); letter-spacing:0.05em; margin-bottom:1rem; }
+.section-line { width:60px; height:2px; background:linear-gradient(90deg,var(--accent),transparent); margin-bottom:3rem; }
+
+/* ── INFO CARDS ── */
+.info-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5px; background:var(--border); border:1px solid var(--border); }
+.info-card { background:var(--panel); padding:2rem; transition:background 0.2s; }
+.info-card:hover { background:var(--bg2); }
+.info-card-icon { width:40px; height:40px; margin-bottom:1.5rem; color:var(--accent); }
+.info-card h3 { font-family:'Orbitron',monospace; font-size:0.9rem; font-weight:700; color:var(--white); letter-spacing:0.1em; margin-bottom:0.75rem; }
+.info-card p { font-size:0.88rem; line-height:1.7; color:var(--text-dim); }
+
+/* ── GENERATOR PAGE ── */
+.gen-inner { max-width:900px; margin:0 auto; }
+.akte-type-tabs { display:flex; gap:2px; margin-bottom:2rem; background:var(--border); padding:2px; width:fit-content; flex-wrap:wrap; }
+.tab-btn { font-family:'Share Tech Mono',monospace; font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-dim); background:var(--panel); border:none; padding:0.6rem 1.2rem; cursor:pointer; transition:all 0.15s; white-space:nowrap; }
+.tab-btn.active { background:var(--accent); color:var(--bg); }
+.tab-btn:hover:not(.active) { color:var(--accent); background:var(--bg2); }
+
+.form-panel { display:none; background:var(--panel); border:1px solid var(--border); padding:2rem; }
+.form-panel.active { display:block; }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem; }
+.form-group { display:flex; flex-direction:column; gap:0.5rem; }
+.form-group.full { grid-column:1/-1; }
+label { font-family:'Share Tech Mono',monospace; font-size:0.65rem; letter-spacing:0.2em; color:var(--accent); text-transform:uppercase; }
+input,textarea,select { background:var(--bg); border:1px solid var(--border); color:var(--white); font-family:'Share Tech Mono',monospace; font-size:0.85rem; padding:0.75rem 1rem; outline:none; transition:border-color 0.2s,box-shadow 0.2s; width:100%; resize:vertical; }
+input:focus,textarea:focus,select:focus { border-color:var(--accent); box-shadow:0 0 0 1px var(--accent2),inset 0 0 20px rgba(0,170,255,.03); }
+select option { background:var(--bg); }
+textarea { min-height:100px; }
+
+.gen-btn { width:100%; font-family:'Orbitron',monospace; font-size:0.85rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--bg); background:var(--accent); border:none; padding:1rem; cursor:pointer; margin-top:1rem; clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%); transition:all 0.2s; box-shadow:0 0 20px rgba(0,170,255,.2); }
+.gen-btn:hover:not(:disabled) { background:var(--white); box-shadow:0 0 40px rgba(0,170,255,.5); }
+.gen-btn:disabled { opacity:0.5; cursor:not-allowed; }
+
+#output-section { display:none; margin-top:2rem; }
+.output-header { display:flex; justify-content:space-between; align-items:center; background:var(--accent); padding:0.75rem 1.5rem; clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%); }
+.output-header span { font-family:'Orbitron',monospace; font-size:0.75rem; font-weight:700; letter-spacing:0.15em; color:var(--bg); text-transform:uppercase; }
+.copy-btn { font-family:'Share Tech Mono',monospace; font-size:0.65rem; letter-spacing:0.15em; color:var(--bg); background:rgba(0,0,0,.2); border:none; padding:0.3rem 0.8rem; cursor:pointer; text-transform:uppercase; transition:background 0.2s; }
+.copy-btn:hover { background:rgba(0,0,0,.4); }
+.output-body { background:var(--bg); border:1px solid var(--border); border-top:none; padding:2rem; font-family:'Share Tech Mono',monospace; font-size:0.82rem; line-height:1.9; color:var(--text); white-space:pre-wrap; min-height:200px; }
+
+@keyframes dots { 0%{content:''}25%{content:'.'}50%{content:'..'}75%{content:'...'}100%{content:''} }
+.loading-dots::after { content:''; animation:dots 1.2s steps(4,end) infinite; }
+
+/* ── TEMPLATE SELECTOR ── */
+.template-hint { font-family:'Share Tech Mono',monospace; font-size:0.7rem; color:var(--text-dim); margin-bottom:1rem; }
+.template-select { margin-bottom:1.5rem; }
+
+/* ── FUNK PAGE ── */
+.funk-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1.5px; background:var(--border); border:1px solid var(--border); margin-bottom:2rem; }
+.funk-card { background:var(--panel); padding:1.5rem; }
+.funk-card h3 { font-family:'Orbitron',monospace; font-size:0.8rem; font-weight:700; color:var(--accent); letter-spacing:0.1em; margin-bottom:1.2rem; text-transform:uppercase; border-bottom:1px solid var(--border); padding-bottom:0.75rem; }
+.funk-list { list-style:none; display:flex; flex-direction:column; gap:0.4rem; }
+.funk-list li { font-family:'Share Tech Mono',monospace; font-size:0.78rem; color:var(--text); line-height:1.5; }
+.funk-list li .code { color:var(--accent); font-weight:700; }
+.funk-list li .code-warn { color:var(--warn); font-weight:700; }
+.funk-list li .code-green { color:var(--green); font-weight:700; }
+.funk-list li .code-yellow { color:var(--yellow); font-weight:700; }
+.funk-list li .code-red { color:var(--red); font-weight:700; }
+
+.rechte-box { background:var(--panel); border:1px solid var(--border); border-left:3px solid var(--accent); padding:1.5rem 2rem; margin-top:2rem; }
+.rechte-box h3 { font-family:'Orbitron',monospace; font-size:0.85rem; color:var(--accent); margin-bottom:1rem; letter-spacing:0.1em; }
+.rechte-box p { font-family:'Share Tech Mono',monospace; font-size:0.88rem; line-height:1.9; color:var(--white); }
+.rechte-box strong { color:var(--accent); }
+
+/* ── RICHTLINIEN PAGE ── */
+.richtlinien-content { background:var(--panel); border:1px solid var(--border); padding:2rem; }
+.rl-section { margin-bottom:2.5rem; }
+.rl-section h2 { font-family:'Orbitron',monospace; font-size:0.9rem; color:var(--accent); letter-spacing:0.1em; margin-bottom:1rem; padding-bottom:0.5rem; border-bottom:1px solid var(--border); }
+.rl-section h3 { font-family:'Share Tech Mono',monospace; font-size:0.8rem; color:var(--white); margin:1rem 0 0.5rem; letter-spacing:0.08em; }
+.rl-section p,.rl-section li { font-size:0.85rem; line-height:1.8; color:var(--text); margin-bottom:0.5rem; }
+.rl-section ul { padding-left:1.5rem; margin-bottom:0.75rem; }
+.rl-section ul li { list-style:none; padding-left:1rem; position:relative; }
+.rl-section ul li::before { content:'▸'; color:var(--accent); position:absolute; left:0; font-size:0.7rem; }
+
+.eskalation-table { width:100%; border-collapse:collapse; margin:1rem 0; }
+.eskalation-table th { background:var(--accent); color:var(--bg); font-family:'Orbitron',monospace; font-size:0.7rem; letter-spacing:0.1em; padding:0.75rem 1rem; text-align:left; }
+.eskalation-table td { border:1px solid var(--border); padding:0.7rem 1rem; font-family:'Share Tech Mono',monospace; font-size:0.78rem; color:var(--text); }
+.eskalation-table tr:nth-child(even) td { background:rgba(0,170,255,0.03); }
+.eskalation-table td:first-child { color:var(--accent); font-weight:700; text-align:center; }
+
+.warn-box { background:rgba(255,107,0,0.08); border:1px solid var(--warn); border-left:3px solid var(--warn); padding:1rem 1.5rem; margin:1rem 0; }
+.warn-box p { color:var(--warn); font-family:'Share Tech Mono',monospace; font-size:0.8rem; line-height:1.7; }
+.warn-box strong { color:var(--warn); }
+
+/* ── GESETZE PAGE ── */
+.gesetze-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1rem; }
+.gesetz-card { background:var(--panel); border:1px solid var(--border); padding:1.25rem 1.5rem; display:flex; align-items:center; justify-content:space-between; transition:all 0.2s; }
+.gesetz-card:hover { border-color:var(--accent); background:var(--bg2); }
+.gesetz-name { font-family:'Share Tech Mono',monospace; font-size:0.8rem; color:var(--white); line-height:1.4; }
+.gesetz-link { font-family:'Share Tech Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; color:var(--accent); text-decoration:none; border:1px solid var(--border); padding:0.3rem 0.75rem; white-space:nowrap; transition:all 0.2s; }
+.gesetz-link:hover { background:var(--accent); color:var(--bg); border-color:var(--accent); }
+
+.haftrechner-frame { background:var(--panel); border:1px solid var(--border); padding:1.5rem; margin-top:2rem; }
+.haftrechner-frame h3 { font-family:'Orbitron',monospace; font-size:0.85rem; color:var(--accent); margin-bottom:1rem; }
+.haftrechner-frame a { display:inline-block; font-family:'Share Tech Mono',monospace; font-size:0.8rem; color:var(--accent); border:1px solid var(--accent); padding:0.6rem 1.5rem; text-decoration:none; transition:all 0.2s; }
+.haftrechner-frame a:hover { background:var(--accent); color:var(--bg); }
+
+/* ── FOOTER ── */
+footer { background:var(--panel); border-top:1px solid var(--border); padding:2rem; text-align:center; font-family:'Share Tech Mono',monospace; font-size:0.65rem; letter-spacing:0.2em; color:var(--text-dim); text-transform:uppercase; }
+footer span { color:var(--accent); }
+
+@media(max-width:640px){
+  .form-row{grid-template-columns:1fr}
+  .stats-bar{gap:2rem}
+  .akte-type-tabs{flex-wrap:wrap}
+  nav ul{gap:.8rem}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">SC<span>PD</span></div>
+  <ul>
+    <li><a href="#" onclick="showPage('home')">Start</a></li>
+    <li><a href="#" onclick="showPage('generator')">Akten-System</a></li>
+    <li><a href="#" onclick="showPage('funk')">Funk & Codes</a></li>
+    <li><a href="#" onclick="showPage('richtlinien')">Richtlinien</a></li>
+    <li><a href="#" onclick="showPage('gesetze')">Gesetze</a></li>
+  </ul>
+</nav>
+
+<!-- ═══════════════════════════════════════ HOME ═══════════════════════════════════════ -->
+<div id="page-home" class="page active">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-badge">▸ System online — Senora City</div>
+    <div class="hero-shield">
+      <svg viewBox="0 0 120 140" fill="none">
+        <path d="M60 5 L110 25 L110 75 C110 105 60 135 60 135 C60 135 10 105 10 75 L10 25 Z" fill="none" stroke="#1a3a5c" stroke-width="2"/>
+        <path d="M60 12 L103 29 L103 75 C103 101 60 128 60 128 C60 128 17 101 17 75 L17 29 Z" fill="rgba(0,170,255,0.05)" stroke="#00aaff" stroke-width="1"/>
+        <text x="60" y="75" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="24" font-weight="900" fill="#00aaff" opacity="0.9">SC</text>
+        <text x="60" y="95" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="11" font-weight="400" fill="#4a6a82" letter-spacing="3">PD</text>
+        <path d="M35 110 L85 110" stroke="#1a3a5c" stroke-width="1"/>
+      </svg>
+    </div>
+    <div class="hero-title"><span class="accent">SCPD</span></div>
+    <div class="hero-sub">Senora City Police Department</div>
+    <p class="hero-desc">Offizielles Akten- und Informationsportal des SCPD auf dem FiveM-Server Senora City. KI-gestützte Akten, Funktabellen, Richtlinien und Gesetze.</p>
+    <button class="btn-primary" onclick="showPage('generator')">Akten-System öffnen</button>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat"><span class="stat-val">24/7</span><span class="stat-label">Einsatzbereit</span></div>
+    <div class="stat"><span class="stat-val">8</span><span class="stat-label">Akten-Typen</span></div>
+    <div class="stat"><span class="stat-val">KI</span><span class="stat-label">Regelkonform</span></div>
+    <div class="stat"><span class="stat-val">24+</span><span class="stat-label">Gesetze</span></div>
+  </div>
+
+  <div style="padding:4rem 2rem; max-width:1100px; margin:0 auto;">
+    <div class="section-label">// Department</div>
+    <div class="section-title">Über das SCPD</div>
+    <div class="section-line"></div>
+    <div class="info-grid">
+      <div class="info-card">
+        <svg class="info-card-icon" viewBox="0 0 40 40" fill="none"><rect x="4" y="4" width="32" height="32" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M12 15h16M12 20h12M12 25h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <h3>KI-Akten-System</h3>
+        <p>8 Akten-Typen mit echten SCPD-Vorlagen und allen Richtlinien. Gib die Fakten ein – die KI schreibt eine regelkonforme, professionelle Akte.</p>
+      </div>
+      <div class="info-card">
+        <svg class="info-card-icon" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="16" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M8 36c0-6.627 5.373-12 12-12s12 5.373 12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <h3>Funk & Codes</h3>
+        <p>Alle 10er-Codes, Einsatzcodes, Statusmeldungen und der vollständige Miranda-Text auf einen Blick.</p>
+      </div>
+      <div class="info-card">
+        <svg class="info-card-icon" viewBox="0 0 40 40" fill="none"><path d="M20 6 L34 12 L34 22 C34 30 20 36 20 36 C20 36 6 30 6 22 L6 12 Z" stroke="currentColor" stroke-width="1.5"/><path d="M14 20l4 4 8-8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h3>Richtlinien & Gesetze</h3>
+        <p>WGR-001 Waffengebrauchsrichtlinien, Eskalationsstufen und alle 24+ Servergesetze direkt verlinkt.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ GENERATOR ═══════════════════════════════════════ -->
+<div id="page-generator" class="page">
+  <div class="sec gen-inner">
+    <div class="section-label">// KI-Akten-System</div>
+    <div class="section-title">Akte erstellen</div>
+    <div class="section-line"></div>
+
+    <div class="akte-type-tabs">
+      <button class="tab-btn active" onclick="switchTab('verdaechtiger')">Verdächtiger</button>
+      <button class="tab-btn" onclick="switchTab('vorfall')">Vorfall / Einsatz</button>
+      <button class="tab-btn" onclick="switchTab('fahrzeug')">Fahrzeug</button>
+      <button class="tab-btn" onclick="switchTab('bankraub')">Bankraub</button>
+      <button class="tab-btn" onclick="switchTab('juwelier')">Juwelierraub</button>
+      <button class="tab-btn" onclick="switchTab('ladenraub')">Ladenraub</button>
+      <button class="tab-btn" onclick="switchTab('sperrzone')">Sperrzone</button>
+      <button class="tab-btn" onclick="switchTab('verfolgung')">Verfolgungsjagd</button>
+    </div>
+
+    <!-- VERDÄCHTIGER -->
+    <div id="tab-verdaechtiger" class="form-panel active">
+      <div class="form-row">
+        <div class="form-group"><label>Vorname</label><input type="text" id="v-vorname" placeholder="z.B. Max"></div>
+        <div class="form-group"><label>Nachname</label><input type="text" id="v-nachname" placeholder="z.B. Mustermann"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Geburtsdatum</label><input type="text" id="v-geburt" placeholder="TT.MM.JJJJ"></div>
+        <div class="form-group"><label>Tatvorwurf</label><input type="text" id="v-tatvorwurf" placeholder="z.B. Bewaffneter Raub"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group full"><label>Was ist passiert?</label><textarea id="v-beschreibung" placeholder="z.B. Verdächtiger wurde beim Einbruch erwischt, versuchte zu fliehen..."></textarea></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Beamter (Dein Name)</label><input type="text" id="v-beamter" placeholder="z.B. Officer Smith"></div>
+        <div class="form-group"><label>Status</label><select id="v-status"><option>Verhaftet</option><option>Flüchtig</option><option>Freigelassen</option><option>In Gewahrsam</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Abgenommene Gegenstände</label><input type="text" id="v-gegenstaende" placeholder="z.B. 1x Pistole, 500$ Bargeld"></div>
+        <div class="form-group"><label>Rechte verlesen von</label><input type="text" id="v-rechte" placeholder="z.B. Officer Smith"></div>
+      </div>
+      <button class="gen-btn" onclick="genAkte('verdaechtiger')">▸ KI-Akte generieren</button>
+    </div>
+
+    <!-- VORFALL -->
+    <div id="tab-vorfall" class="form-panel">
+      <div class="form-row">
+        <div class="form-group"><label>Vorfallstyp</label><select id="vf-typ"><option>Schusswechsel</option><option>Verfolgungsjagd</option><option>Einbruch</option><option>Bankraub</option><option>Drogenhandel</option><option>Körperverletzung</option><option>Sonstiges</option></select></div>
+        <div class="form-group"><label>Ort / Location</label><input type="text" id="vf-ort" placeholder="z.B. Legion Square, Sandy Shores"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Datum & Uhrzeit</label><input type="text" id="vf-zeit" placeholder="z.B. 14.06.2025 – 22:30 Uhr"></div>
+        <div class="form-group"><label>Beteiligte Personen</label><input type="text" id="vf-beteiligte" placeholder="z.B. 2 Täter, 1 Opfer"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group full"><label>Ablauf / Was ist passiert?</label><textarea id="vf-beschreibung" placeholder="z.B. Einheit wurde zu einem 10-90 gerufen..."></textarea></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Einsatzleiter</label><input type="text" id="vf-beamter" placeholder="z.B. Officer Smith"></div>
+        <div class="form-group"><label>Ergebnis</label><select id="vf-ergebnis"><option>Täter verhaftet</option><option>Täter flüchtig</option><option>Lage unter Kontrolle</option><option>Opfer geborgen</option><option>Einsatz abgebrochen</option></select></div>
+      </div>
+      <button class="gen-btn" onclick="genAkte('vorfall')">▸ KI-Akte generieren</button>
+    </div>
+
+    <!-- FAHRZEUG -->
+    <div id="tab-fahrzeug" class="form-panel">
+      <div class="form-row">
+        <div class="form-group"><label>Kennzeichen</label><input type="text" id="fz-kennzeichen" placeholder="z.B. SC-4729-X"></div>
+        <div class="form-group"><label>Fahrzeugtyp</label><input type="text" id="fz-typ" placeholder="z.B. Schwarzer Dodge Charger"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Fahrer / Halter</label><input type="text" id="fz-fahrer" placeholder="z.B. Max Mustermann"></div>
+        <div class="form-group"><label>Grund der Erfassung</label><select id="fz-grund"><option>Sichergestellt</option><option>Fahndung</option><option>Unfallbeteiligung</option><option>Verdächtiges Fahrzeug</option><option>Fluchtfahrzeug</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group full"><label>Beschreibung / Vorfall</label><textarea id="fz-beschreibung" placeholder="z.B. Fahrzeug nach Verfolgungsjagd sichergestellt..."></textarea></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Erfassender Beamter</label><input type="text" id="fz-beamter" placeholder="z.B. Officer Smith"></div>
+        <div class="form-group"><label>Funddatum</label><input type="text" id="fz-datum" placeholder="z.B. 14.06.2025"></div>
+      </div>
+      <button class="gen-btn" onclick="genAkte('fahrzeug')">▸ KI-Akte generieren</button>
+    </div>
+
+    <!-- BANKRAUB -->
+    <div id="tab-bankraub" class="form-panel">
+      <div class="form-row">
+        <div class="form-group"><label>Bank / Ort</label><select id="br-bank"><option>County Bank – Paleto Bay</option><option>Staatsbank</option><option>Fleeca Bank</option></select></div>
+        <div class="form-group"><label>Familie / Gruppe der Täter</label><input type="text" id="br-tater" placeholder="z.B. Familie Rosenberg"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Anzahl Täter</label><input type="text" id="br-anzahl" placeholder="z.B. 4 Täter"></div>
+        <div class="form-group"><label>Geiseln genommen?</label><select id="br-geiseln"><option>Ja</option><option>Nein</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Abschluss</label><select id="br-abschluss"><option>Stürmung durch Spezialkräfte</option><option>Verfolgungsjagd nach Flucht</option><option>Täter ergaben sich</option><option>Täter flüchtig</option></select></div>
+        <div class="form-group"><label>Einsatzleiter</label><input type="text" id="br-beamter" placeholder="z.B. Officer Smith"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group full"><label>Ablauf (kurz beschreiben)</label><textarea id="br-beschreibung" placeholder="z.B. Täter drohten mehrfach mit Gewalt, Verhandlung scheiterte, bewusstlose Geisel festgestellt..."></textarea></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Abgenommene Gegenstände</label><input type="text" id="br-gegenstaende" placeholder="z.B. 2x AK-47, 50.000$ Bargeld"></div>
+        <div class="form-group"><label>Rechte verlesen von</label><input type="text" id="br-rechte" placeholder="z.B. Officer Smith"></div>
+      </div>
+      <button class="gen-btn" onclick="genAkte('bankraub')">▸ KI-Akte generieren</button>
+    </div>
+
+    <!-- JUWELIER -->
+    <div id="tab-juwelier" class="form-panel">
+      <div class="form-row">
+        <div class="form-group"><label>Familie / Gruppe der Täter</label><input type="text" id="jw-tater" placeholder="z.B. Familie Müller"></div>
+        <div class="form-group"><label>Anzahl Täter</label><input type="text" id="jw-anzahl" placeholder="z.B. 3 Täter"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Geiseln genommen?</label><select id="jw-geiseln"><option>Ja</option><option>Nein</option></select></div>
+        <div class="form-group"><label>Abschluss</label><select id="jw-abschluss"><option>Stürmung durch Spezialkräfte</option><option>Verfolgungsjagd nach Flucht</option><option>Täter ergaben sich</option><option>Täter flüchtig</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group full"><label>Ablauf</label><textarea id="jw-beschreibung" placeholder="z.B. Täter übernahmen den Juwelier, verlangten Öffnung des Tresors..."></textarea></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Einsatzleiter</label><input type="text" id="jw-beamter" placeholder="z.B. Officer Smith"></div>
+        <div class="form-group"><label>Abgenommene Gegenstände</label><input type="text" id="jw-gegenstaende" placeholder="z.B. Schmuck, Waffen"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Rechte verlesen von</label><input type="text" id="jw-rechte" placeholder="z.B. Officer Smith"></div>
+      </div>
+      <button class="gen-btn" onclick="genAkte('juwelier')">▸ KI-Akte generieren</button>
+    </div>
+
+    <!-- LADENRAUB -->
+    <div id="tab-ladenraub" class="form-panel">
+      <div class="form-row">
+        <div class="form-group"><label>Ladenname / Ort</label><input type="text" id="lr-ort" placeholder="z.B. 24/7 Market, Sandy Shores"></div>
+        <div class="form-group"><label>Täter / Beschuldigung</label><input type="text" id="lr-tater" placeholder="z.B. Max Mustermann und 2 Unbekannte"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Geiseln genommen?</label><select id="lr-geiseln"><option>Ja</option><option>Nein</option></select></div>
+        <div class="form-group"><label>Abschluss</label><select id="lr-abschluss"><option>Täter festgenommen</option><option>Stürmung</option><option>Verfolgungsjagd</option><option>Täter flüchtig</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group full"><label>Ablauf</label><textarea id="lr-beschreibung" placeholder="z.B. Täter überfielen den Laden, bedrohten die Angestellten..."></textarea></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Einsatzleiter</label><input type="text" id="lr-beamter" placeholder="z.B. Officer Smith"></div>
+        <div class="form-group"><label>Abgenommene Gegenstände</label><input type="text" id="lr-gegenstaende" placeholder="z.B. Bargeld aus der Kasse, 1x Pistole"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Rechte verlesen von</label><input type="text" id="lr-rechte" placeholder="z.B. Officer Smith"></div>
+      </div>
+      <button class="gen-btn" onclick="genAkte('ladenraub')">▸ KI-Akte generieren</button>
+    </div>
+
+    <!-- SPERRZONE -->
+    <div id="tab-sperrzone" class="form-panel">
+      <div class="form-row">
+        <div class="form-group"><label>Name des Beschuldigten</label><input type="text" id="sz-name" placeholder="z.B. Max Mustermann"></div>
+        <div class="form-group"><label>Sperrzone / Ort</label><input type="text" id="sz-ort" placeholder="z.B. Tatort Legion Square"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Anzahl Verwarnungen</label><input type="text" id="sz-verwarnungen" placeholder="z.B. 3x mündlich verwarnt"></div>
+        <div class="form-group"><label>Ergebnis</label><select id="sz-ergebnis"><option>In Gewahrsam genommen</option><option>Verhaftet</option><option>Freigelassen nach Verwarnung</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group full"><label>Verhalten des Beschuldigten</label><textarea id="sz-beschreibung" placeholder="z.B. Beschuldigter ignorierte wiederholte Anweisungen, provozierte die Beamten..."></textarea></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Erfassender Beamter</label><input type="text" id="sz-beamter" placeholder="z.B. Officer Smith"></div>
+        <div class="form-group"><label>Abgenommene Gegenstände</label><input type="text" id="sz-gegenstaende" placeholder="z.B. keine / Handy"></div>
+      </div>
+      <button class="gen-btn" onclick="genAkte('sperrzone')">▸ KI-Akte generieren</button>
+    </div>
+
+    <!-- VERFOLGUNGSJAGD -->
+    <div id="tab-verfolgung" class="form-panel">
+      <div class="form-row">
+        <div class="form-group"><label>Verdächtiger / Täter</label><input type="text" id="vj-tater" placeholder="z.B. Max Mustermann"></div>
+        <div class="form-group"><label>Fahrzeug des Täters</label><input type="text" id="vj-fahrzeug" placeholder="z.B. Schwarzer BMW, Kz. SC-123"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Auslöser der Verfolgung</label><input type="text" id="vj-ausloser" placeholder="z.B. Flucht nach Verkehrskontrolle (10-56)"></div>
+        <div class="form-group"><label>Route / Strecke</label><input type="text" id="vj-route" placeholder="z.B. Von LS Innenstadt nach Sandy Shores"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group full"><label>Ablauf der Verfolgung</label><textarea id="vj-beschreibung" placeholder="z.B. Täter ignorierte mehrfache Anhalteaufforderungen, gefährdete Verkehrsteilnehmer..."></textarea></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Ende der Verfolgung</label><select id="vj-ende"><option>Täter festgenommen</option><option>Täter flüchtig</option><option>Fahrzeug sichergestellt</option><option>Täter verunfallt</option></select></div>
+        <div class="form-group"><label>Einsatzleiter</label><input type="text" id="vj-beamter" placeholder="z.B. Officer Smith"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Abgenommene Gegenstände</label><input type="text" id="vj-gegenstaende" placeholder="z.B. Fahrzeug sichergestellt, 1x Pistole"></div>
+        <div class="form-group"><label>Rechte verlesen von</label><input type="text" id="vj-rechte" placeholder="z.B. Officer Smith"></div>
+      </div>
+      <button class="gen-btn" onclick="genAkte('verfolgung')">▸ KI-Akte generieren</button>
+    </div>
+
+    <!-- OUTPUT -->
+    <div id="output-section">
+      <div class="output-header">
+        <span id="output-title">SCPD – Offizielle Akte</span>
+        <button class="copy-btn" onclick="copyAkte()">[ Kopieren ]</button>
+      </div>
+      <div class="output-body" id="output-body"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ FUNK ═══════════════════════════════════════ -->
+<div id="page-funk" class="page">
+  <div class="sec">
+    <div class="section-label">// Kommunikation</div>
+    <div class="section-title">Funk & Codes</div>
+    <div class="section-line"></div>
+
+    <div class="funk-grid">
+      <div class="funk-card">
+        <h3>10er Funkcodes</h3>
+        <ul class="funk-list">
+          <li><span class="code">10-01</span> – Dienstantritt</li>
+          <li><span class="code">10-02</span> – Dienstende</li>
+          <li><span class="code">10-03</span> – Information</li>
+          <li><span class="code">10-04</span> – Verstanden</li>
+          <li><span class="code">10-05</span> – Wiederholen</li>
+          <li><span class="code">10-06</span> – Abwesend / Nicht funkbereit</li>
+          <li><span class="code">10-13</span> – Schüsse gemeldet</li>
+          <li><span class="code">10-15</span> – Beamter am Boden</li>
+          <li><span class="code">10-16</span> – Anfahrt zum Gefängnis</li>
+          <li><span class="code">10-18</span> – Anfahrt zum SCPD</li>
+          <li><span class="code">10-20</span> – Aktueller Standort</li>
+          <li><span class="code">10-30</span> – Abholung benötigt</li>
+          <li><span class="code">10-35</span> – Dienstanmeldung / Einteilung</li>
+          <li><span class="code">10-55</span> – Verkehrsunfall</li>
+          <li><span class="code">10-56</span> – Verkehrskontrolle</li>
+          <li><span class="code">10-60</span> – Schussfreigabe</li>
+          <li><span class="code">10-80</span> – Verfolgungsjagd</li>
+          <li><span class="code-warn">11-90</span> – Beamter unter Bedrängnis</li>
+          <li><span class="code-red">11-99</span> – Beamter unter Beschuss</li>
+        </ul>
+      </div>
+
+      <div class="funk-card">
+        <h3>Einsatzcodes</h3>
+        <ul class="funk-list">
+          <li style="margin-bottom:.75rem;padding-bottom:.75rem;border-bottom:1px solid var(--border);">
+            <span class="code-red">● Code BREAK</span> – Notstand ausrufen
+          </li>
+          <li style="margin-bottom:.75rem;padding-bottom:.75rem;border-bottom:1px solid var(--border);">
+            <span class="code-green">● Code GREEN</span> – Notstand aufheben
+          </li>
+          <li style="margin-bottom:.75rem;padding-bottom:.75rem;border-bottom:1px solid var(--border);">
+            <span class="code-yellow">● Code YELLOW</span> – Im PD einfinden
+          </li>
+          <li style="margin-bottom:1.5rem;padding-bottom:.75rem;border-bottom:1px solid var(--border);">
+            <span class="code">● Code BLACK</span> – Alle Staatsbeamten sammeln & schützen
+          </li>
+          <li><span class="code">Code 1</span> – Einsatzbereit</li>
+          <li><span class="code">Code 2</span> – Einsatzfahrt mit Blaulicht</li>
+          <li><span class="code">Code 3</span> – Einsatzfahrt mit Blaulicht & Sirene</li>
+          <li><span class="code">Code 4</span> – Einsatz abgeschlossen</li>
+          <li><span class="code-warn">Code 10</span> – Verstärkung benötigt</li>
+        </ul>
+      </div>
+
+      <div class="funk-card">
+        <h3>Statusmeldungen</h3>
+        <ul class="funk-list">
+          <li><span class="code">Status 1</span> – Verfügbar am SCPD</li>
+          <li><span class="code">Status 2</span> – Verfügbar auf Funk</li>
+          <li><span class="code">Status 3</span> – Auf Einsatzfahrt</li>
+          <li><span class="code">Status 4</span> – Am Einsatzort</li>
+          <li><span class="code-warn">Status 5</span> – Unterstützungsanfrage</li>
+          <li><span class="code-red">Status 6</span> – Nicht einsatzbereit</li>
+          <li><span class="code">Status 7</span> – Pause</li>
+          <li><span class="code">Status 8</span> – Sprechwunsch</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="rechte-box">
+      <h3>Miranda-Rechte (2x vorlesen)</h3>
+      <p>
+        „Sie sind <strong>vorläufig festgenommen</strong>. Sie haben das <strong>Recht zu schweigen</strong> – alles, was Sie sagen, kann und wird vor Gericht gegen Sie verwendet werden. Sie haben das <strong>Recht auf Akteneinsicht</strong>, auf ein <strong>Telefonat</strong> sowie auf einen <strong>Anwalt</strong>. Haben Sie Ihre Rechte verstanden?"
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ RICHTLINIEN ═══════════════════════════════════════ -->
+<div id="page-richtlinien" class="page">
+  <div class="sec">
+    <div class="section-label">// Dienstanweisung PD-WGR-001 · Version 2.0 · Gültig ab 10.06.2026</div>
+    <div class="section-title">Waffengebrauchsrichtlinien</div>
+    <div class="section-line"></div>
+
+    <div class="richtlinien-content">
+      <div class="rl-section">
+        <h2>1. Zweck und Geltungsbereich</h2>
+        <p>Diese Richtlinie legt für alle Beamten verbindliche Grundsätze für den Einsatz von Zwangsmitteln und Schusswaffen fest. Sie gilt für sämtliche Beamten im Streifendienst, bei Ermittlungen und jeder anderen dienstlichen Tätigkeit, unabhängig von Dienstgrad oder Einsatzart.</p>
+        <p>Rechtsgrundlage: UZwG §§ 1–9 sowie StGB. Bei Widerspruch zwischen Richtlinie und Gesetz hat das Gesetz Vorrang.</p>
+      </div>
+
+      <div class="rl-section">
+        <h2>2. Leitprinzipien</h2>
+        <h3>2.1 Matching Force – Verhältnismäßiger Krafteinsatz</h3>
+        <p>Die Intensität des Einsatzmittels darf die Intensität der Bedrohung nicht wesentlich überschreiten.</p>
+        <ul>
+          <li>Auf verbalen Widerstand → verbale Deeskalation</li>
+          <li>Auf passiven körperlichen Widerstand → kontrollierte Festhaltetechniken</li>
+          <li>Auf aktive körperliche Gewalt → entsprechend stärkere Mittel</li>
+          <li>Schusswaffeneinsatz → nur nach UZwG § 9 (Abschnitt 4)</li>
+        </ul>
+        <h3>2.2 Minimierung von Verlusten</h3>
+        <ul>
+          <li>Das Leben aller Beteiligten hat absoluten Vorrang vor taktischen Zielen</li>
+          <li>Vor Schusswaffen sind stets alle anderen Mittel zu prüfen</li>
+          <li>Erste Hilfe ist unmittelbar nach Einsatz einzuleiten – auch beim Gegner (UZwG § 3)</li>
+          <li>Unbeteiligte aktiv aus Gefahrenbereichen fernhalten</li>
+        </ul>
+        <h3>2.3 Deeskalation als Vorrang</h3>
+        <ul>
+          <li>Ruhige, klare verbale Kommunikation</li>
+          <li>Körpersprache und positionelle Distanz</li>
+          <li>Ausreichend Zeit geben, sofern keine unmittelbare Gefahr besteht</li>
+        </ul>
+      </div>
+
+      <div class="rl-section">
+        <h2>3. Eskalationsstufen</h2>
+        <table class="eskalation-table">
+          <tr><th>Stufe</th><th>Bedrohungslage</th><th>Zulässige Einsatzmittel</th></tr>
+          <tr><td>1</td><td>Kooperative Person, keine Bedrohung</td><td>Verbale Kommunikation, Anwesenheit</td></tr>
+          <tr><td>2</td><td>Unkooperativ, passive Verweigerung</td><td>Verbale Befehle, Handkontrolle, leichter Körperkontakt</td></tr>
+          <tr><td>3</td><td>Aktiver Widerstand (nicht aggressiv)</td><td>Kontrollgriffe, Handschellen</td></tr>
+          <tr><td>4</td><td>Aggressiver Widerstand, Angriff</td><td>Schlagstock, Taser</td></tr>
+          <tr><td>5</td><td>Lebensbedrohliche Gewalt</td><td>Schusswaffe – nur als letztes Mittel</td></tr>
+        </table>
+        <p>Bei unmittelbar lebensbedrohlicher Gewalt kann direkt auf Stufe 5 reagiert werden – lückenlose Dokumentation Pflicht.</p>
+      </div>
+
+      <div class="rl-section">
+        <h2>4. Schusswaffengebrauch (UZwG § 9)</h2>
+        <h3>4.1 Voraussetzungen</h3>
+        <p>Schusswaffeneinsatz nur wenn andere Mittel erfolglos waren oder offensichtlich keinen Erfolg versprechen:</p>
+        <ul>
+          <li>Um die Ausführung oder Fortsetzung einer Straftat zu verhindern</li>
+          <li>Um eine Festnahme zu sichern oder Flucht zu verhindern</li>
+          <li>Gegen Personen, die an einer Straftat beteiligt sind</li>
+          <li>Gegen Personen, die wahrscheinlich von Schusswaffen oder Sprengstoff Gebrauch machen werden</li>
+        </ul>
+        <h3>4.2 Verbotene Anwendungen</h3>
+        <ul>
+          <li>Wenn Unbeteiligte mit hoher Wahrscheinlichkeit gefährdet werden</li>
+          <li>Bei unklarer Zielidentifikation (Dunkelheit, Gedränge)</li>
+          <li>Gegen bereits fixierte oder wehrlose Personen</li>
+          <li>Gegen Minderjährige (außer bei lebensbedrohlicher Lage UZwG § 9)</li>
+          <li>Aus fahrenden Fahrzeugen ohne unmittelbare Gefahrenlage</li>
+          <li>Als Einschüchterungsmittel ohne gesetzliche Voraussetzungen</li>
+        </ul>
+        <h3>4.3 Grundsatz der Schonung</h3>
+        <ul>
+          <li>Zweck: Angriffs- oder Fluchtfähigkeit herabsetzen – nicht töten</li>
+          <li>Kein Dauerbeschuss – nach jedem Schuss Lagebeurteilung</li>
+          <li>Sofortige Erstversorgung nach Sicherung der Lage</li>
+        </ul>
+        <div class="warn-box"><p><strong>⚠ WARNUNG:</strong> Jeder Schusswaffeneinsatz zieht eine automatische interne Untersuchung nach sich. Widerrechtlicher Schusswaffengebrauch wird nach UZwG § 9 mit einer Geldstrafe von <strong>5.000–10.000 Dollar</strong> geahndet.</p></div>
+        <h3>4.4 Androhung und Warnschuss</h3>
+        <ul>
+          <li>Schusswaffeneinsatz ist grundsätzlich anzudrohen</li>
+          <li>Ein Warnschuss gilt als Androhung (UZwG § 9) – nur wenn sicherer Kugelfang besteht</li>
+          <li>Androhung kann bei gegenwärtigem Angriff (Notwehr, StGB § 8) entfallen</li>
+        </ul>
+        <h3>4.5 Sicherheitsbereiche (StGB § 41)</h3>
+        <p>Bei unbefugtem Betreten folgender Bereiche muss mit sofortigem Schusswaffengebrauch gerechnet werden: Fort Zancudo Air Base, Staatsgefängnis, FIB-Bereiche, SCPD-Sicherheitsbereiche, sowie alle vom DOJ, USMS oder den Streitkräften deklarierten Bereiche.</p>
+      </div>
+
+      <div class="rl-section">
+        <h2>5. Nicht-letale Einsatzmittel</h2>
+        <ul>
+          <li>Taser – bei körperlichem Angriff ohne Schusswaffe</li>
+          <li>Schlagstock – als letztes nicht-letales Mittel bei bewaffnetem Angriff ohne Schusswaffe</li>
+          <li>Körperliche Festhaltetechniken – bei Widerstand ohne Waffeneinsatz</li>
+        </ul>
+      </div>
+
+      <div class="rl-section">
+        <h2>6–7. Pflichten & Verbote</h2>
+        <h3>Nach dem Einsatz verpflichtend:</h3>
+        <ul>
+          <li>Mündlicher Bericht an Vorgesetzten</li>
+          <li>Vollständiger schriftlicher Einsatzbericht</li>
+          <li>Erste Hilfe leisten – auch gegenüber der gegnerischen Partei (UZwG § 3)</li>
+        </ul>
+        <h3>Absolut verboten:</h3>
+        <ul>
+          <li>Gewalt gegen fixierte oder wehrlose Personen</li>
+          <li>Schusswaffe als Einschüchterungsmittel ohne gesetzliche Grundlage</li>
+          <li>Unterlassen von Erster Hilfe (strafbar nach UZwG § 3 + StGB § 28)</li>
+          <li>Falsche oder unvollständige Angaben im Einsatzbericht</li>
+          <li>Waffengebrauch unter Einfluss von Alkohol oder Medikamenten</li>
+        </ul>
+      </div>
+
+      <div class="rl-section">
+        <h2>Genehmigung</h2>
+        <p>Datum: 08.06.2026 | <strong>James Whitaker</strong> – Chief of Police | <strong>Lilly Sullivan</strong> – Assistant Chief of Police | <strong>Adam Sutherland</strong> – Rechtsabteilung</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ GESETZE ═══════════════════════════════════════ -->
+<div id="page-gesetze" class="page">
+  <div class="sec">
+    <div class="section-label">// Rechtsdatenbank</div>
+    <div class="section-title">Gesetze & Verordnungen</div>
+    <div class="section-line"></div>
+
+    <div class="haftrechner-frame" style="margin-bottom:2rem;">
+      <h3>⚖ Haftrechner</h3>
+      <p style="font-family:'Share Tech Mono',monospace;font-size:0.8rem;color:var(--text-dim);margin-bottom:1rem;">Strafzeiten automatisch berechnen:</p>
+      <a href="https://haftrechner.wall3.de/" target="_blank">▸ Haftrechner öffnen</a>
+    </div>
+
+    <div class="gesetze-grid">
+      <div class="gesetz-card"><span class="gesetz-name">Patriotengesetz (PATRIOT Act)</span><a class="gesetz-link" href="https://drive.google.com/open?id=1ViLEL310bB5YjureiE_A_aefJ4LouS6fG4S1kk4n07M" target="_blank">Öffnen ↗</a></div>
+      <div class="gesetz-card"><span class="gesetz-name">AnwO – Anwaltsordnung</span><a class="gesetz-link" href="https://drive.google.com/open?id=1R66mSac3zq0emgLxoJFuyDxTukjEZ1dy" target="_blank">Öffnen ↗</a></div>
+      <div class="gesetz-card"><span class="gesetz-name">AGAG – Akademische Grade & Studienordnung</span><a class="gesetz-link" href="https://drive.google.com/open?id=1HUAfJVVeS2MyHGO9vdXKhg-8Ha6mZjkhyuxKB-Kg1Pg" target="_blank">Öffnen ↗</a></div>
+      <div class="gesetz-card"><span class="gesetz-name">AsG – Arbeitsschutzgesetz</span><a class="gesetz-link" href="https://drive.google.com/open?id=1y4ViFXa8LtRfGZHD_xEWUtWcg-eG5seG" target="_blank">Öffnen ↗</a></div>
+      <div class="gesetz-card"><span class="gesetz-name">BG – Beamtengesetz</span><a class="gesetz-link" href="https://drive.google.com/open?id=1yQAOX8qyk-92PBi1rFsfW_WMPBnYcdkcfE2h37-LOx4" target="_blank">Öffnen ↗</a></div>
+      <div class="gesetz-card"><span class="gesetz-name">BGB – Bürgerliches Gesetzbuch</span><a class="gesetz-link" href="https://drive.google.com/open?id=1GRfcUT8JPRxR2BQPHMFKqCY6D7_fB23U" target="_blank">Öffnen ↗</a></div>
+      <div class="gesetz-card"><span class="gesetz-name">AKG – Antikorruptionsgesetz</span><a class="gesetz-link" href="https://drive.google.com/open?id=1nrYFSQALsXPugNnxp1YPxUHXdOV03nqD" target="_blank">Öffnen ↗</a></div>
+      <div class="gesetz-card"><span class="gesetz-name">BEG – Beweissicherungsgesetz</span><a class="gesetz-link" href="https://drive.google.com/open?id=1mqhKyVEqJL4jQ7TLc-miOmrAcRQS90sj" target="_blank">Öffnen ↗</a></div>
+      <div class="gesetz-card"><span class="gesetz-name">BtMG – Betäubungsmittelgesetz</span><a class="gesetz-link" href="https://drive.google.com/open?id=1JaV0yRS9q4iRbpxeR4Bf7fVArr5wAJQrSQXIVye1mSU" target="_blank">Öffnen ↗</a></div>
+      <div class="gesetz-card"><span class="gesetz-name">EBG – Einbürgerungsgesetz</span><a class="gesetz-link" href="https://drive.google.com/open?id=1-TRSDuq23Xr5AY86MGTd2QPTZBbwOvhj" target="_blank">Öffnen ↗</a></div>
+      <div class="gesetz-card"><span class="gesetz-name">ERG – Eherechtsgesetz</span><a class="gesetz-link" href="https://drive.google.com/open?id=1SArWXZP8c8-qQJkiiYMIe67KhTkWQVst" target="_blank">Öffnen ↗</a></div>
+      <div class="gesetz-card"><span class="gesetz-name">GG – Grundgesetz</span><a class="gesetz-link" href="https://drive.google.com/open?id=1IgacnBZQCz5meRtOt72iO2shkGmXRD-N" target="_blank">Öffnen ↗</a></div>
+      <div class="gesetz-card"><span class="gesetz-name">GVG – Gerichtsverfassungsgesetz</span><a class="gesetz-link" href="https://drive.google.com/open?id=1CUG9KPCSEKwAHKoEuiJJdo910sg681vTDC_GkGAtbaM" target="_blank">Öffnen ↗</a></div>
+      <div class="gesetz-card"><span class="gesetz-name">HGB – Handelsgesetzbuch</span><a class="gesetz-link" href="https://drive.google.com/open?id=1RZ3YPeA3EP_URPTlatlcS6Cf5IOt9sxY" target="_blank">Öffnen ↗</a></div>
+      <div class="gesetz-card"><span class="gesetz-name">LuftVO – Luftverkehrsordnung</span><a class="gesetz-link" href="https://drive.google.com/open?id=1IpaEF5XsiE8U4ZDZ1tGonXmF72rpFvt2" target="_blank">Öffnen ↗</a></div>
+      <div class="gesetz-card"><span class="gesetz-name">MO – Medizinische Ordnung</span><a class="gesetz-link" href="https://drive.google.com/open?id=11kww3yCYiaoP9nclvCfTMMNnpV2ycgF0" target="_blank">Öffnen ↗</a></div>
+      <div class="gesetz-card"><span class="gesetz-name">SiGeSchG – Sicherheits- & Gesundheitsschutzgesetz</span><a class="gesetz-link" href="https://drive.google.com/open?id=16UHPuSfBczkpGT7EaQKZ8sXbA07pnCOw" target="_blank">Öffnen ↗</a></div>
+      <div class="gesetz-card"><span class="gesetz-name">StGB – Strafgesetzbuch</span><a class="gesetz-link" href="https://drive.google.com/open?id=1ExKIHYAKLd_kdjDw_3tANuUWqJxUguTbiTTDgj5tOFg" target="_blank">Öffnen ↗</a></div>
+      <div class="gesetz-card"><span class="gesetz-name">StPO – Strafprozessordnung</span><a class="gesetz-link" href="https://drive.google.com/open?id=15Pi38Ml6G_uqyBKPd3jKaoMzct0ep6A1" target="_blank">Öffnen ↗</a></div>
+      <div class="gesetz-card"><span class="gesetz-name">StVO – Straßenverkehrsordnung</span><a class="gesetz-link" href="https://drive.google.com/open?id=10ZBnM68E7x87Pq8NA9Rf5JYLPv8rTQ0Nj5uVbR9pWKQ" target="_blank">Öffnen ↗</a></div>
+      <div class="gesetz-card"><span class="gesetz-name">UZwG – Gesetz vom Unmittelbaren Zwang</span><a class="gesetz-link" href="https://drive.google.com/open?id=1yf2_FYvoVhEgGQ3dDQjc9ipvbIFGU1Bj" target="_blank">Öffnen ↗</a></div>
+      <div class="gesetz-card"><span class="gesetz-name">VwV DienstO – Dienstordnung</span><a class="gesetz-link" href="https://drive.google.com/open?id=1TQsjgZNv3I1Ive4akG_YTVhjDBDz2tQMpAlShtEKYJw" target="_blank">Öffnen ↗</a></div>
+      <div class="gesetz-card"><span class="gesetz-name">VwVfG – Verwaltungsverfahrensgesetz</span><a class="gesetz-link" href="https://drive.google.com/open?id=1OKEk7p_Vff48TPtbSPWkUtnrdEf2YAys3Ik" target="_blank">Öffnen ↗</a></div>
+      <div class="gesetz-card"><span class="gesetz-name">WaffG – Waffengesetz</span><a class="gesetz-link" href="https://drive.google.com/open?id=1_grcxoEHL8ko-_dvEH1Gwhh_Ozkl33rZ4we9chL0E8o" target="_blank">Öffnen ↗</a></div>
+      <div class="gesetz-card"><span class="gesetz-name">ZPO – Zivilprozessordnung</span><a class="gesetz-link" href="https://drive.google.com/open?id=1vyNSJRdBjsTXZ8L0_0PZFFhuwurDqZc7" target="_blank">Öffnen ↗</a></div>
+      <div class="gesetz-card"><span class="gesetz-name">Strafkatalog (Google Docs)</span><a class="gesetz-link" href="https://docs.google.com/document/d/1Bcml6_859LNaeYqIwz7I2ePJ-4fLIUAsxmFl6fGMEos/edit" target="_blank">Öffnen ↗</a></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>SCPD</span> – Senora City Police Department &nbsp;|&nbsp; FiveM: Senora City &nbsp;|&nbsp; KI-Akten-System v2.0 &nbsp;|&nbsp; Dienstanweisung PD-WGR-001
+</footer>
+
+<script>
+// ── PAGE NAVIGATION ──
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  window.scrollTo(0,0);
+  if(id !== 'generator') document.getElementById('output-section').style.display='none';
+}
+
+// ── TAB SWITCHING ──
+const tabOrder = ['verdaechtiger','vorfall','fahrzeug','bankraub','juwelier','ladenraub','sperrzone','verfolgung'];
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', tabOrder[i]===tab));
+  document.querySelectorAll('.form-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  document.getElementById('output-section').style.display='none';
+}
+
+// ── HELPER ──
+function g(id) { return (document.getElementById(id)?.value||'').trim(); }
+
+// ── TEMPLATE GENERATOR (kein API nötig) ──
+function genAkte(typ) {
+  const out = document.getElementById('output-section');
+  const body = document.getElementById('output-body');
+  const title = document.getElementById('output-title');
+
+  const now = new Date().toLocaleString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  const aktenNr = 'SCPD-' + Date.now().toString().slice(-6);
+  const miranda = 'Sie sind vorläufig festgenommen. Sie haben das Recht zu schweigen – alles, was Sie sagen, kann und wird vor Gericht gegen Sie verwendet werden. Sie haben das Recht auf Akteneinsicht, auf ein Telefonat sowie auf einen Anwalt. Haben Sie Ihre Rechte verstanden?';
+
+  let text = '';
+
+  if(typ==='verdaechtiger') {
+    const vn=g('v-vorname'), nn=g('v-nachname');
+    if(!vn||!nn||!g('v-beschreibung')){alert('Bitte Vor- und Nachname sowie Beschreibung ausfüllen.');return;}
+    title.textContent='SCPD – Personalakte: '+vn+' '+nn;
+    text=`════════════════════════════════════════════
+  SENORA CITY POLICE DEPARTMENT
+         PERSONALAKTE – VERTRAULICH
+════════════════════════════════════════════
+Akten-Nr.:   ${aktenNr}
+Datum:       ${now}
+Klassif.:    INTERN / SCPD
+════════════════════════════════════════════
+
+[ 1 ] PERSÖNLICHE DATEN
+────────────────────────────────────────────
+Name:              ${vn} ${nn}
+Geburtsdatum:      ${g('v-geburt')||'Unbekannt'}
+Status:            ${g('v-status')}
+
+[ 2 ] TATVORWURF
+────────────────────────────────────────────
+${g('v-tatvorwurf')||'Nicht spezifiziert'}
+
+[ 3 ] SACHVERHALT
+────────────────────────────────────────────
+${g('v-beschreibung')}
+
+[ 4 ] ABGENOMMENE GEGENSTÄNDE
+────────────────────────────────────────────
+${g('v-gegenstaende')||'Keine Gegenstände abgenommen.'}
+
+[ 5 ] MIRANDA-RECHTE
+────────────────────────────────────────────
+Rechte verlesen von: ${g('v-rechte')||g('v-beamter')||'Unbekannt'}
+(2x vorgelesen)
+
+"${miranda}"
+
+[ 6 ] BEARBEITENDER BEAMTER
+────────────────────────────────────────────
+${g('v-beamter')||'Unbekannt'}
+
+════════════════════════════════════════════
+Dienstanweisung PD-WGR-001 | UZwG §§ 1–9
+════════════════════════════════════════════`;
+  }
+
+  else if(typ==='vorfall') {
+    if(!g('vf-beschreibung')){alert('Bitte den Ablauf beschreiben.');return;}
+    title.textContent='SCPD – Einsatzbericht: '+g('vf-typ');
+    text=`════════════════════════════════════════════
+  SENORA CITY POLICE DEPARTMENT
+         EINSATZBERICHT – VERTRAULICH
+════════════════════════════════════════════
+Akten-Nr.:   ${aktenNr}
+Datum:       ${now}
+Klassif.:    INTERN / SCPD
+════════════════════════════════════════════
+
+[ 1 ] EINSATZDATEN
+────────────────────────────────────────────
+Vorfallstyp:    ${g('vf-typ')}
+Ort:            ${g('vf-ort')||'Unbekannt'}
+Zeitpunkt:      ${g('vf-zeit')||now}
+Beteiligte:     ${g('vf-beteiligte')||'Unbekannt'}
+Einsatzleiter:  ${g('vf-beamter')||'Unbekannt'}
+
+[ 2 ] EINSATZVERLAUF
+────────────────────────────────────────────
+${g('vf-beschreibung')}
+
+[ 3 ] ERGEBNIS
+────────────────────────────────────────────
+${g('vf-ergebnis')}
+
+[ 4 ] EINSATZLEITER / ABSCHLUSS
+────────────────────────────────────────────
+${g('vf-beamter')||'Unbekannt'} – Code 4 (Einsatz abgeschlossen)
+
+════════════════════════════════════════════
+Dienstanweisung PD-WGR-001 | UZwG §§ 1–9
+════════════════════════════════════════════`;
+  }
+
+  else if(typ==='fahrzeug') {
+    if(!g('fz-kennzeichen')||!g('fz-beschreibung')){alert('Bitte Kennzeichen und Beschreibung ausfüllen.');return;}
+    title.textContent='SCPD – Fahrzeugakte: '+g('fz-kennzeichen');
+    text=`════════════════════════════════════════════
+  SENORA CITY POLICE DEPARTMENT
+          FAHRZEUGAKTE – VERTRAULICH
+════════════════════════════════════════════
+Akten-Nr.:   ${aktenNr}
+Datum:       ${g('fz-datum')||now}
+Klassif.:    INTERN / SCPD
+════════════════════════════════════════════
+
+[ 1 ] FAHRZEUGDATEN
+────────────────────────────────────────────
+Kennzeichen:    ${g('fz-kennzeichen')}
+Fahrzeugtyp:    ${g('fz-typ')||'Unbekannt'}
+Fahrer/Halter:  ${g('fz-fahrer')||'Unbekannt'}
+
+[ 2 ] ERFASSUNGSGRUND
+────────────────────────────────────────────
+${g('fz-grund')}
+
+[ 3 ] SACHVERHALT
+────────────────────────────────────────────
+${g('fz-beschreibung')}
+
+[ 4 ] ANGEORDNETE MASSNAHMEN
+────────────────────────────────────────────
+Fahrzeug wurde gemäß Dienstanweisung PD-WGR-001
+durch die zuständige Einheit erfasst und dokumentiert.
+
+[ 5 ] ERFASSENDER BEAMTER
+────────────────────────────────────────────
+${g('fz-beamter')||'Unbekannt'}
+
+════════════════════════════════════════════
+Dienstanweisung PD-WGR-001 | UZwG §§ 1–9
+════════════════════════════════════════════`;
+  }
+
+  else if(typ==='bankraub') {
+    if(!g('br-tater')){alert('Bitte Tätername / Familie ausfüllen.');return;}
+    const stuerming = g('br-abschluss').includes('Stürm');
+    const flucht = g('br-abschluss').includes('Verfolgung');
+    title.textContent='SCPD – Bankraub-Akte: '+g('br-bank');
+    text=`════════════════════════════════════════════
+  SENORA CITY POLICE DEPARTMENT
+   BANKRAUB – ${g('br-abschluss').toUpperCase()}
+════════════════════════════════════════════
+Akten-Nr.:   ${aktenNr}
+Datum:       ${now}
+Klassif.:    INTERN / SCPD
+════════════════════════════════════════════
+
+Akteneintrag durch: ${g('br-beamter')||'Unbekannt'}
+
+[ TATHERGANG ]
+────────────────────────────────────────────
+Die Tatverdächtigen der Familie ${g('br-tater')} begannen, die ${g('br-bank')} gemeinsam mit ${g('br-anzahl')||'mehreren'} Mittätern auszurauben. ${g('br-geiseln')==='Ja'?'Während des Überfalls wurden mehrere Personen als Geiseln genommen, um die Forderungen der Täter durchzusetzen und die Einsatzkräfte auf Distanz zu halten.':''}
+
+Nach dem Eintreffen der ersten Polizeieinheiten wurde der Bereich um die Bank weiträumig abgesperrt und die Verhandlungsführung aufgenommen. Trotz mehrerer Versuche, die Situation friedlich zu beenden, zeigten sich die Täter unkooperativ und drohten mehrfach mit Gewaltanwendung${g('br-geiseln')==='Ja'?' gegenüber den Geiseln':''}.
+${g('br-beschreibung')?'\n'+g('br-beschreibung')+'\n':''}
+${stuerming?'Da die Verhandlungen erfolglos verliefen und keine Aussicht auf eine friedliche Lösung bestand, wurde durch den Einsatzleiter der taktische Zugriff angeordnet. Spezialkräfte stürmten das Gebäude und konnten die verbleibenden Geiseln sichern sowie die Tatverdächtigen überwältigen und festnehmen.':''}
+${flucht?'Nach Abschluss des Überfalls flüchteten die Tatverdächtigen mit Fahrzeugen vom Tatort. Es wurde umgehend 10-80 (Verfolgungsjagd) eingeleitet. Während der Flucht leisteten die Täter aktiven Widerstand, gefährdeten andere Verkehrsteilnehmer und ignorierten mehrfach Anhalteaufforderungen. Die Verfolgung konnte schließlich durch gezielte Maßnahmen der Einsatzkräfte beendet werden. Die Täter wurden gestellt, überwältigt und festgenommen.':''}
+
+[ ABGENOMMENE GEGENSTÄNDE ]
+────────────────────────────────────────────
+${g('br-gegenstaende')||'Keine Angabe'}
+
+[ MIRANDA-RECHTE ]
+────────────────────────────────────────────
+Rechte verlesen von: ${g('br-rechte')||g('br-beamter')||'Unbekannt'} (2x vorgelesen)
+
+[ BEWEISMITTEL ]
+────────────────────────────────────────────
+Bodycam-Aufnahmen, Einsatzprotokoll, Zeugenaussagen
+
+════════════════════════════════════════════
+Dienstanweisung PD-WGR-001 | UZwG §§ 1–9
+════════════════════════════════════════════`;
+  }
+
+  else if(typ==='juwelier') {
+    if(!g('jw-tater')){alert('Bitte Tätername / Familie ausfüllen.');return;}
+    const stuerming = g('jw-abschluss').includes('Stürm');
+    const flucht = g('jw-abschluss').includes('Verfolgung');
+    title.textContent='SCPD – Juwelierraub-Akte';
+    text=`════════════════════════════════════════════
+  SENORA CITY POLICE DEPARTMENT
+  JUWELIERRAUB – ${g('jw-abschluss').toUpperCase()}
+════════════════════════════════════════════
+Akten-Nr.:   ${aktenNr}
+Datum:       ${now}
+Klassif.:    INTERN / SCPD
+════════════════════════════════════════════
+
+Akteneintrag durch: ${g('jw-beamter')||'Unbekannt'}
+
+[ TATHERGANG ]
+────────────────────────────────────────────
+Die Tatverdächtigen der Familie ${g('jw-tater')} begannen, den Juwelier gemeinsam mit ${g('jw-anzahl')||'mehreren'} Mittätern auszurauben. ${g('jw-geiseln')==='Ja'?'Während des Überfalls wurden mehrere Personen als Geiseln genommen, um die Forderungen der Täter durchzusetzen.':''}
+
+Nach Eintreffen der Einsatzkräfte übernahm die Verhandlungsführung den Kontakt zu den Tätern.
+${g('jw-beschreibung')?'\n'+g('jw-beschreibung')+'\n':''}
+${stuerming?'Da die Gespräche erfolglos verliefen und keine Aussicht auf eine friedliche Lösung bestand, wurde die Stürmung des Juweliers durch die Spezialkräfte angeordnet. Durch den gezielten Zugriff konnten die Täter überwältigt und festgenommen sowie alle Geiseln unverletzt gerettet werden.':''}
+${flucht?'Die Tatverdächtigen flüchteten nach dem Raub mit Fahrzeugen. Es wurde umgehend 10-80 (Verfolgungsjagd) eingeleitet. Die Täter wurden nach intensiver Verfolgung gestellt und festgenommen.':''}
+
+[ ABGENOMMENE GEGENSTÄNDE ]
+────────────────────────────────────────────
+${g('jw-gegenstaende')||'Keine Angabe'}
+
+[ MIRANDA-RECHTE ]
+────────────────────────────────────────────
+Rechte verlesen von: ${g('jw-rechte')||g('jw-beamter')||'Unbekannt'} (2x vorgelesen)
+
+[ BEWEISMITTEL ]
+────────────────────────────────────────────
+Bodycam-Aufnahmen, Einsatzprotokoll, Zeugenaussagen
+
+════════════════════════════════════════════
+Dienstanweisung PD-WGR-001 | UZwG §§ 1–9
+════════════════════════════════════════════`;
+  }
+
+  else if(typ==='ladenraub') {
+    if(!g('lr-ort')){alert('Bitte Ladenort ausfüllen.');return;}
+    title.textContent='SCPD – Ladenraub-Akte: '+g('lr-ort');
+    text=`════════════════════════════════════════════
+  SENORA CITY POLICE DEPARTMENT
+      LADENRAUB / RAUBÜBERFALL
+════════════════════════════════════════════
+Akten-Nr.:   ${aktenNr}
+Datum:       ${now}
+Klassif.:    INTERN / SCPD
+════════════════════════════════════════════
+
+Akteneintrag durch: ${g('lr-beamter')||'Unbekannt'}
+
+[ TATHERGANG ]
+────────────────────────────────────────────
+Die Tatverdächtigen (${g('lr-tater')||'Unbekannt'}) begannen, den Laden in ${g('lr-ort')} gemeinsam mit mehreren Mittätern auszurauben. ${g('lr-geiseln')==='Ja'?'Während des Überfalls wurden mehrere Personen als Geiseln genommen, um die Forderungen der Täter durchzusetzen.':''}
+
+Nach dem Eintreffen der ersten Polizeieinheiten wurde der Bereich um den Tatort großräumig abgesichert.
+${g('lr-beschreibung')?'\n'+g('lr-beschreibung')+'\n':''}
+Ergebnis: ${g('lr-abschluss')}
+
+[ ABGENOMMENE GEGENSTÄNDE ]
+────────────────────────────────────────────
+${g('lr-gegenstaende')||'Keine Angabe'}
+
+[ MIRANDA-RECHTE ]
+────────────────────────────────────────────
+Rechte verlesen von: ${g('lr-rechte')||g('lr-beamter')||'Unbekannt'} (2x vorgelesen)
+
+[ BEWEISMITTEL ]
+────────────────────────────────────────────
+Bodycam-Aufnahmen, Einsatzprotokoll, Zeugenaussagen
+
+════════════════════════════════════════════
+Dienstanweisung PD-WGR-001 | UZwG §§ 1–9
+════════════════════════════════════════════`;
+  }
+
+  else if(typ==='sperrzone') {
+    if(!g('sz-name')){alert('Bitte Name des Beschuldigten ausfüllen.');return;}
+    title.textContent='SCPD – Sperrzone-Akte: '+g('sz-name');
+    text=`════════════════════════════════════════════
+  SENORA CITY POLICE DEPARTMENT
+    UNERLAUBTES BETRETEN EINER SPERRZONE
+════════════════════════════════════════════
+Akten-Nr.:   ${aktenNr}
+Datum:       ${now}
+Klassif.:    INTERN / SCPD
+════════════════════════════════════════════
+
+Akteneintrag durch: ${g('sz-beamter')||'Unbekannt'}
+
+[ TATHERGANG ]
+────────────────────────────────────────────
+Der Beschuldigte ${g('sz-name')} betrat wiederholt eine eingerichtete Sperrzone (${g('sz-ort')||'Unbekannt'}), obwohl diese klar gekennzeichnet und durch deutlich sichtbare Polizeikräfte gesichert war.
+
+Der Beschuldigte wurde von den Einsatzkräften ${g('sz-verwarnungen')||'mehrfach mündlich'} auf das Betretungsverbot hingewiesen. ${g('sz-beschreibung')||'Trotz eindeutiger Aufforderungen verließ er die Sperrzone nicht und betrat diese erneut, wodurch er die Ansprache der Polizei ignorierte. Der Beschuldigte zeigte hierbei deutliche Uneinsichtigkeit.'}
+
+Da der Beschuldigte auch nach mehrfacher Androhung einer Festnahme der Anweisung nicht Folge leistete, wurde er schließlich von den Einsatzkräften in Gewahrsam genommen.
+
+[ ABGENOMMENE GEGENSTÄNDE ]
+────────────────────────────────────────────
+${g('sz-gegenstaende')||'Keine'}
+
+[ ERGEBNIS ]
+────────────────────────────────────────────
+${g('sz-ergebnis')}
+
+[ BEWEISMITTEL ]
+────────────────────────────────────────────
+Bodycam-Aufnahmen, Zeugenaussagen der eingesetzten Beamten
+
+[ ERFASSENDER BEAMTER ]
+────────────────────────────────────────────
+${g('sz-beamter')||'Unbekannt'}
+
+════════════════════════════════════════════
+Dienstanweisung PD-WGR-001 | StGB § 41
+════════════════════════════════════════════`;
+  }
+
+  else if(typ==='verfolgung') {
+    if(!g('vj-tater')){alert('Bitte Täter/Verdächtigen ausfüllen.');return;}
+    title.textContent='SCPD – Verfolgungsjagd-Akte: '+g('vj-tater');
+    text=`════════════════════════════════════════════
+  SENORA CITY POLICE DEPARTMENT
+        VERFOLGUNGSJAGD – 10-80
+════════════════════════════════════════════
+Akten-Nr.:   ${aktenNr}
+Datum:       ${now}
+Klassif.:    INTERN / SCPD
+════════════════════════════════════════════
+
+Akteneintrag durch: ${g('vj-beamter')||'Unbekannt'}
+
+[ EINSATZDATEN ]
+────────────────────────────────────────────
+Verdächtiger:   ${g('vj-tater')}
+Fahrzeug:       ${g('vj-fahrzeug')||'Unbekannt'}
+Auslöser:       ${g('vj-ausloser')||'Unbekannt'}
+Route:          ${g('vj-route')||'Unbekannt'}
+
+[ TATHERGANG ]
+────────────────────────────────────────────
+10-80 wurde eingeleitet, nachdem der/die Tatverdächtige ${g('vj-tater')} mit dem Fahrzeug (${g('vj-fahrzeug')||'Unbekannt'}) die Flucht ergriff.
+
+${g('vj-beschreibung')||'Der Tatverdächtige ignorierte mehrfache Anhalteaufforderungen der eingesetzten Einheiten. Während der Verfolgung leistete der Tatverdächtige aktiven Widerstand, gefährdete durch sein Fahrverhalten andere Verkehrsteilnehmer und ignorierte mehrfach Anhaltesignale (Blaulicht & Sirene – Code 3).'}
+
+[ ABSCHLUSS ]
+────────────────────────────────────────────
+${g('vj-ende')}
+
+[ ABGENOMMENE GEGENSTÄNDE ]
+────────────────────────────────────────────
+${g('vj-gegenstaende')||'Keine Angabe'}
+
+[ MIRANDA-RECHTE ]
+────────────────────────────────────────────
+Rechte verlesen von: ${g('vj-rechte')||g('vj-beamter')||'Unbekannt'} (2x vorgelesen)
+
+[ BEWEISMITTEL ]
+────────────────────────────────────────────
+Bodycam-Aufnahmen, Dashcam, Funkprotokoll 10-80
+
+[ EINSATZLEITER ]
+────────────────────────────────────────────
+${g('vj-beamter')||'Unbekannt'} – Code 4 (Einsatz abgeschlossen)
+
+════════════════════════════════════════════
+Dienstanweisung PD-WGR-001 | StVO | UZwG
+════════════════════════════════════════════`;
+  }
+
+  const out2 = document.getElementById('output-section');
+  const body2 = document.getElementById('output-body');
+  body2.className='output-body';
+  body2.textContent=text;
+  out2.style.display='block';
+  out2.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function copyAkte() {
+  navigator.clipboard.writeText(document.getElementById('output-body').textContent).then(()=>{
+    const btn=document.querySelector('.copy-btn');
+    btn.textContent='[ Kopiert! ]';
+    setTimeout(()=>btn.textContent='[ Kopieren ]',2000);
+  });
+}
+</script>
+</body>
+</html>
