@@ -939,16 +939,16 @@ Nutze 10-80 (Verfolgungsjagd) und dokumentiere die Gefährdung anderer Verkehrst
   try {
     const res = await fetch('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',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'application/json','Authorization':'Bearer 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','Authorization':'Bearer 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','Authorization':'Bearer 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','Authorization':'Bearer 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','Authorization':'Bearer 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','Authorization':'Bearer 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','Authorization':'Bearer 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','Authorization':'Bearer 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'},
       body:JSON.stringify({
-        model:'claude-sonnet-4-6',
+        model:'google/gemini-2.0-flash-exp:free',
         max_tokens:1000,
         system: SYSTEM,
         messages:[{role:'user',content:prompt}]
       })
     });
     const data = await res.json();
-    const text = data.content?.map(b=>b.text||'').join('')||'Fehler: Keine Antwort erhalten.';
+    const text = data.choices?.[0]?.message?.content||'Fehler: Keine Antwort erhalten.';
     body.className='output-body';
     body.textContent=text;
   } catch(e) {
